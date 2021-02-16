@@ -123,6 +123,15 @@ def draw_background(screen, grid_on):
             )
 
 
+# Load and play background music
+# Sound source: http://ccmixter.org/files/Apoxode/59262
+# License: https://creativecommons.org/licenses/by/3.0/
+pygame.mixer.music.load('Apoxode_-_Electric_1.mp3')
+pygame.mixer.music.play(loops=-1)
+
+# Sound sources: Jon Fincher
+collision_sound = pygame.mixer.Sound('Collision.ogg')
+
 snake = Snake(INITIAL_SNAKE_LENGTH)
 avoid_positions = snake.get_positions()
 food = Food(avoid_positions)
@@ -145,6 +154,7 @@ while running:
         food.kill()
         avoid_positions = snake.get_positions()
         food = Food(avoid_positions)
+        collision_sound.play()
     if pressed_keys[K_g]:
         grid_on = not grid_on
 
