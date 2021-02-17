@@ -7,14 +7,15 @@ from pygame.constants import (
     K_LEFT,
     K_RIGHT,
     K_UP, K_g,
-    QUIT)
+    QUIT,
+    RLEACCEL)
 from pygame.sprite import Sprite
 
 pygame.init()
 
-GRID_SIZE = 20
+GRID_SIZE = 32
 SCREEN_WIDTH = 800
-SCREEN_HEIGHT = 600
+SCREEN_HEIGHT = 576
 
 POS_X_RANGE = SCREEN_WIDTH/GRID_SIZE
 POS_Y_RANGE = SCREEN_HEIGHT/GRID_SIZE
@@ -88,15 +89,18 @@ class Snake():
 class Food(Sprite):
     def __init__(self, avoid_positions):
         super().__init__()
-        self.surf = pygame.Surface((GRID_SIZE, GRID_SIZE))
-        self.surf.fill((200, 0, 0))
+        # self.surf = pygame.Surface((GRID_SIZE, GRID_SIZE))
+        # self.surf.fill((200, 0, 0))
+        self.surf = pygame.image.load('apple-32x32.png').convert()
+        self.surf.set_colorkey((0, 0, 0), RLEACCEL)
         pos = ()
         good_position = False
         while not good_position:
-            pos = (random.randint(0, POS_X_RANGE) * GRID_SIZE,
-                   random.randint(0, POS_Y_RANGE) * GRID_SIZE)
+            pos = (random.randint(0, POS_X_RANGE-1) * GRID_SIZE,
+                   random.randint(0, POS_Y_RANGE-1) * GRID_SIZE)
             if pos not in avoid_positions:
                 good_position = True
+
         self.rect = self.surf.get_rect(topleft=pos)
 
 
@@ -132,11 +136,11 @@ pygame.mixer.music.play(loops=-1)
 # Sound sources: Jon Fincher
 collision_sound = pygame.mixer.Sound('Collision.ogg')
 
+screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+
 snake = Snake(INITIAL_SNAKE_LENGTH)
 avoid_positions = snake.get_positions()
 food = Food(avoid_positions)
-screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-
 running = True
 clock = pygame.time.Clock()
 grid_on = False
