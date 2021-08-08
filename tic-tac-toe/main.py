@@ -46,59 +46,57 @@ class Board:
 
 
 class Player:
-    def __init__(self, mark) -> None:
+    def __init__(self, mark, board: Board) -> None:
         self.mark = mark
+        self.board = board
 
-    def move(self, valid_positions):
-        return random.choices(valid_positions)[0]
+    def move(self):
+        return random.choices(self.board.position_avaliable())[0]
 
 
 class HumanPlayer(Player):
-    def __init__(self, mark) -> None:
-        super().__init__(mark)
+    def __init__(self, mark, board: Board) -> None:
+        super().__init__(mark, board)
 
-    def move(self, valid_positions) -> Tuple[int, str]:
+    def move(self) -> Tuple[int, str]:
         index = None
+        valid_positions = self.board.position_avaliable()
         while index not in valid_positions:
             try:
                 index = int(input(f'Your turn {valid_positions}:'))
-                if index in valid_positions:
-                    return index
-                print(f'Invalid move {index}, try again.')
+                if index not in valid_positions:
+                    raise ValueError
             except ValueError:
                 print(f'Invalid move {index}, try again.')
-
-
-class RandomPlayer(Player):
-    def __init__(self, mark) -> None:
-        super().__init__(mark)
-
-    def move(self, valid_positions):
-        return super().move(valid_positions)
+        return index
 
 
 class Game:
     def __init__(self) -> None:
         self.board = Board()
-        self.player1 = HumanPlayer('X')
-        self.player2 = RandomPlayer('O')
+        self.player1 = HumanPlayer('X', self.board)
+        self.player2 = Player('O', self.board)
 
     def play(self):
         player = self.player1
         self.board.print()
-        while self.board.position_avaliable():
+        winner = None
+        while self.board.position_avaliable() and not winner:
             print(f'{player.mark} move:')
-            index = player.move(self.board.position_avaliable())
+            index = player.move()
             self.board.make_move(index, player.mark)
             self.board.print()
             if self.board.is_win(index):
-                self.board.print()
-                print(f'{player.mark} WIN!')
+                winner = player
                 break
             if player == self.player1:
                 player = self.player2
             else:
                 player = self.player1
+        if winner:
+            print(f'{winner.mark} WIN!')
+        else:
+            print("It's a tie.")
 
 
 if __name__ == '__main__':
