@@ -53,4 +53,4 @@ if __name__ == '__main__':
         print(f'bs insert, list {arr1} target {non_exist} index {index}')
         non_exist = target + 0.1
         index = bs_insert(arr1, non_exist)
-        print(f'binary search, list {arr1} target {non_exist} index {index}')
+        print(f'bs insert, list {arr1} target {non_exist} index {index}')
