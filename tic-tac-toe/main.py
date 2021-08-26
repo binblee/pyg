@@ -1,7 +1,7 @@
 import random
 import math
 
-
+# board class
 class Board:
     EMPTY = '.'
 
